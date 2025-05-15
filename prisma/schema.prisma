@@ -13,3 +13,120 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Customers {
+  id           String     @id @default(uuid())
+  name         String     @db.VarChar(50)
+  email        String     @db.VarChar(50)
+  password     String
+  phone        String
+  address      String?
+  payment_card String?
+  cart         Carts?
+  deleted_at   DateTime?
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
+  comments     Comments[]
+}
+
+model Carts {
+  id              String            @id @default(uuid())
+  customer        Customers         @relation(fields: [customer_id], references: [id])
+  customer_id     String            @unique
+  ordersCarts     OrdersCarts[]
+  productsOnCarts ProductsOnCarts[]
+}
+
+model OrdersCarts {
+  cart       Carts    @relation(fields: [cart_id], references: [id])
+  cart_id    String   @unique
+  product    Products @relation(fields: [product_id], references: [id])
+  product_id String
+  quantity   Int
+}
+
+model Products {
+  id              String            @id @default(uuid())
+  name            String
+  quantity        Int
+  price           Float
+  description     String
+  image           String
+  delivery_time   DateTime
+  delivery_fee    Float
+  search_tags     String
+  average_rating  AverageRatings?
+  category        Categories        @relation(fields: [category_id], references: [id])
+  category_id     String
+  seller          Sellers           @relation(fields: [seller_id], references: [id])
+  seller_id       String
+  color           Colors            @relation(fields: [color_id], references: [id])
+  color_id        String
+  deleted_at      DateTime?
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+  ordersCarts     OrdersCarts[]
+  comments        Comments[]
+  productsOnCarts ProductsOnCarts[]
+}
+
+model AverageRatings {
+  id              String   @id @default(uuid())
+  product         Products @relation(fields: [product_id], references: [id])
+  product_id      String   @unique
+  rating_quantity Int
+  rating_sum      Int
+  average_rating  Float
+}
+
+model Sellers {
+  id          String     @id @default(uuid())
+  email       String
+  seller_name String
+  password    String
+  deleted_at  DateTime?
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  products    Products[]
+}
+
+model Colors {
+  id         String     @id @default(uuid())
+  name       String
+  deleted_at DateTime?
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  products   Products[]
+}
+
+model Comments {
+  id           String    @id @default(uuid())
+  name         String
+  rating       Int
+  comment_text String
+  product      Products  @relation(fields: [product_id], references: [id])
+  product_id   String    @unique
+  customer     Customers @relation(fields: [customer_id], references: [id])
+  customer_id  String    @unique
+  deleted_at   DateTime?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+}
+
+model Categories {
+  id         String     @id @default(uuid())
+  name       String
+  deleted_at DateTime
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  products   Products[]
+}
+
+model ProductsOnCarts {
+  product    Products @relation(fields: [product_id], references: [id])
+  product_id String
+  cart       Carts    @relation(fields: [cart_id], references: [id])
+  cart_id    String
+
+  @@id([product_id, cart_id])
+}
