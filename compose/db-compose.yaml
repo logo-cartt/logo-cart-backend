@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  postgresql:
+    image: 'bitnami/postgresql:latest'
+    volumes:
+      - "logo-cart-db:/var/lib/postgresql/data"
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRESQL_PASSWORD=1281
+
+
+volumes:
+  logo-cart-db:
