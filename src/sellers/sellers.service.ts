@@ -15,7 +15,7 @@ export class SellersService {
   }
 
   findOne(id: string) {
-    return this.prisma.sellers.findFirst({ where: { id, deleted_at: null } });
+    return this.prisma.sellers.findUnique({ where: { id, deleted_at: null } });
   }
 
   update(id: string, updateSellerDto: UpdateSellerDto) {
