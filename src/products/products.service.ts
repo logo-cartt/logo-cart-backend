@@ -6,7 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
-  
+
   create(createProductDto: CreateProductDto) {
     return this.prisma.products.create({ data: createProductDto });
   }
@@ -29,6 +29,9 @@ export class ProductsService {
   }
 
   remove(id: string) {
-    return this.prisma.customers.delete({ where: { id, deleted_at: null } });
+    return this.prisma.customers.update({
+      where: { id },
+      data: { deleted_at: new Date() },
+    });
   }
 }
