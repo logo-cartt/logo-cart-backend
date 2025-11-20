@@ -1,4 +1,7 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateColorDto } from './create-color.dto';
+import { IsNotEmpty, IsString } from "class-validator";
 
-export class UpdateColorDto extends PartialType(CreateColorDto) {}
+export class UpdateColorDto {
+  @IsString()
+  @IsNotEmpty()
+  readonly name: string;
+}
